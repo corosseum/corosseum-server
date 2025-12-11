@@ -1,7 +1,7 @@
 package com.ysw.corosseum.service;
 
-import com.ysw.corosseum.dto.auth.GuestAuthResponse;
+import com.ysw.corosseum.dto.auth.GuestAuthResponseDTO;
 
 public interface AuthService {
-    GuestAuthResponse issueGuestId();
+    GuestAuthResponseDTO issueGuestId();
 }
