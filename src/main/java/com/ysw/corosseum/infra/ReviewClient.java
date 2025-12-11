@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ysw.corosseum.common.exception.InternalServerErrorException;
 import com.ysw.corosseum.dto.openai.OpenAiChatRequest;
 import com.ysw.corosseum.dto.submission.ReviewResponseDTO;
 
@@ -57,17 +54,6 @@ public class ReviewClient {
 
 		OpenAiChatRequest.ResponseFormat responseFormat = openAiClient.jsonSchemaFormat("CodeReview", schema);
 
-		try {
-			return openAiClient.requestJson(SYSTEM_PROMPT, userPrompt, ReviewResponseDTO.class, responseFormat);
-		} catch (JsonProcessingException e) {
-			log.error("JSON 파싱 실패: 코드 리뷰", e);
-			throw new InternalServerErrorException("코드 리뷰 응답 파싱에 실패했습니다.", e);
-		} catch (RestClientException e) {
-			log.error("OpenAI API 호출 실패: 코드 리뷰", e);
-			throw new InternalServerErrorException("코드 리뷰 중 OpenAI API 호출에 실패했습니다.", e);
-		} catch (Exception e) {
-			log.error("예상치 못한 오류: 코드 리뷰", e);
-			throw new InternalServerErrorException("코드 리뷰 중 오류가 발생했습니다.", e);
-		}
+		return openAiClient.requestJson(SYSTEM_PROMPT, userPrompt, ReviewResponseDTO.class, responseFormat);
 	}
 }

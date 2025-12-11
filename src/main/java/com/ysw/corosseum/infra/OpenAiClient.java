@@ -8,15 +8,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ysw.corosseum.common.exception.InternalServerErrorException;
 import com.ysw.corosseum.dto.openai.OpenAiChatRequest;
 import com.ysw.corosseum.dto.openai.OpenAiChatResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OpenAiClient {
 
 	private final RestClient openAiRestClient;
@@ -44,14 +46,19 @@ public class OpenAiClient {
 		String userPrompt,
 		Class<T> responseType,
 		OpenAiChatRequest.ResponseFormat responseFormat
-	) throws JsonProcessingException {
+	) {
 
 		OpenAiChatRequest request = buildRequest(systemPrompt, userPrompt, responseFormat);
 
-		OpenAiChatResponse response = callOpenAi(request);
-		String content = extractContent(response);
+		try {
+			OpenAiChatResponse response = callOpenAi(request);
+			String content = extractContent(response);
 
-		return objectMapper.readValue(content, responseType);
+			return objectMapper.readValue(content, responseType);
+		} catch (Exception e) {
+			log.error("OpenAI API 호출 실패", e);
+			throw new InternalServerErrorException("OpenAI 서비스 연동 중 오류가 발생했습니다.", e);
+		}
 	}
 
 	private OpenAiChatRequest buildRequest(
