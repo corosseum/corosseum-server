@@ -3,10 +3,13 @@ package com.ysw.corosseum.repository.impl;
 import com.ysw.corosseum.domain.entity.Quest;
 import com.ysw.corosseum.domain.type.QuestStatus;
 import com.ysw.corosseum.repository.QuestJpaRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,6 +17,7 @@ import java.util.Optional;
 public class QuestRepository {
 
 	private final QuestJpaRepository questJpaRepository;
+	private final EntityManager entityManager;
 
 	public Optional<Quest> findById(String id) {
 		return questJpaRepository.findById(id);
@@ -39,7 +43,35 @@ public class QuestRepository {
 		return questJpaRepository.existsByQuestDate(date);
 	}
 
-	public java.util.List<Quest> findByQuestDateBetween(LocalDate start, LocalDate end) {
+	public List<Quest> findByQuestDateBetween(LocalDate start, LocalDate end) {
 		return questJpaRepository.findByQuestDateBetween(start, end);
+	}
+
+	public List<Quest> findAllOrderByQuestDateDesc(int offset, int limit) {
+		TypedQuery<Quest> query = entityManager.createQuery(
+			"SELECT q FROM Quest q WHERE q.status != 'DELETED' ORDER BY q.questDate DESC",
+			Quest.class
+		);
+		query.setFirstResult(offset);
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
+	public List<Quest> findAllCompletedOrderByQuestDateDesc(int offset, int limit) {
+		TypedQuery<Quest> query = entityManager.createQuery(
+			"SELECT q FROM Quest q WHERE q.status = 'COMPLETED' ORDER BY q.questDate DESC",
+			Quest.class
+		);
+		query.setFirstResult(offset);
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
+	public long countAll() {
+		return questJpaRepository.countAll();
+	}
+
+	public long countCompleted() {
+		return questJpaRepository.countCompleted();
 	}
 }

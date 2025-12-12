@@ -21,30 +21,12 @@ public class QuestResponseDTO {
     
 	@Schema(description = "퀘스트 날짜", example = "2024-01-01")
     private LocalDate questDate;
-    
-	@Schema(description = "퀘스트 상태")
-    private QuestStatus status;
 
     public static QuestResponseDTO of(Quest quest) {
         return QuestResponseDTO.builder()
             .id(quest.getId())
             .description(quest.getDescription())
             .questDate(quest.getQuestDate())
-            .status(quest.getStatus())
-            .build();
-    }
-
-    public static QuestResponseDTO of(
-        String id,
-        String description,
-        LocalDate questDate,
-        QuestStatus status
-    ) {
-        return QuestResponseDTO.builder()
-            .id(id)
-            .description(description)
-            .questDate(questDate)
-            .status(status)
             .build();
     }
 }

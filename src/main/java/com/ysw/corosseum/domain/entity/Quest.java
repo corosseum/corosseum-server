@@ -42,7 +42,7 @@ public class Quest {
 			.id(UuidUtil.generate())
 			.description(description)
 			.questDate(questDate)
-			.status(QuestStatus.INACTIVE)
+			.status(QuestStatus.PENDING)
 			.createdAt(DateUtil.now())
 			.build();
 	}
@@ -53,7 +53,12 @@ public class Quest {
 	}
 
 	public void deactivate() {
-		this.status = QuestStatus.INACTIVE;
+		this.status = QuestStatus.COMPLETED;
+		this.updatedAt = DateUtil.now();
+	}
+
+	public void delete() {
+		this.status = QuestStatus.DELETED;
 		this.updatedAt = DateUtil.now();
 	}
 }

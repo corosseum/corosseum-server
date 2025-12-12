@@ -2,6 +2,8 @@ package com.ysw.corosseum.service.impl;
 
 import com.ysw.corosseum.common.exception.NotFoundException;
 import com.ysw.corosseum.domain.entity.Quest;
+import com.ysw.corosseum.dto.common.PagedResponseDTO;
+import com.ysw.corosseum.dto.common.PagingRequestDTO;
 import com.ysw.corosseum.dto.quest.QuestResponseDTO;
 import com.ysw.corosseum.dto.quest.QuestTopic;
 import com.ysw.corosseum.repository.impl.QuestRepository;
@@ -30,11 +32,34 @@ public class QuestServiceImpl implements QuestService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public QuestResponseDTO getCurrentQuest() {
+	public QuestResponseDTO getTodayQuest() {
 		Quest quest = questRepository.findActiveQuest()
 			.orElseThrow(() -> new NotFoundException("활성 퀘스트가 없습니다."));
 		
 		return QuestResponseDTO.of(quest);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public PagedResponseDTO<QuestResponseDTO> getCompletedQuests(PagingRequestDTO pagingRequest) {
+		long total = questRepository.countCompleted();
+
+		if (total == 0) {
+			return PagedResponseDTO.empty(pagingRequest);
+		}
+
+		List<Quest> quests = questRepository.findAllCompletedOrderByQuestDateDesc(
+			pagingRequest.getOffset(),
+			pagingRequest.getLimit()
+		);
+
+		return PagedResponseDTO.of(
+			pagingRequest,
+			total,
+			quests.stream()
+				.map(QuestResponseDTO::of)
+				.toList()
+		);
 	}
 
 	@Override

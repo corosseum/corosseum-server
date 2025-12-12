@@ -1,6 +1,8 @@
 package com.ysw.corosseum.controller;
 
 import com.ysw.corosseum.common.ApiResponse;
+import com.ysw.corosseum.dto.common.PagedResponseDTO;
+import com.ysw.corosseum.dto.common.PagingRequestDTO;
 import com.ysw.corosseum.dto.quest.QuestResponseDTO;
 import com.ysw.corosseum.service.QuestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +25,19 @@ public class QuestController {
 		summary = "현재 퀘스트 조회",
 		description = "오늘 날짜의 활성화된 퀘스트를 조회합니다."
 	)
-	@GetMapping("/current")
-	public ResponseEntity<ApiResponse<QuestResponseDTO>> getCurrentQuest() {
-		return ResponseEntity.ok(ApiResponse.of(questService.getCurrentQuest()));
+	@GetMapping("/today")
+	public ResponseEntity<ApiResponse<QuestResponseDTO>> getTodayQuest() {
+		return ResponseEntity.ok(ApiResponse.of(questService.getTodayQuest()));
+	}
+
+	@Operation(
+		summary = "역대 퀘스트 목록 조회",
+		description = "역대 퀘스트 목록을 날짜 내림차순으로 페이징하여 조회합니다."
+	)
+	@GetMapping
+	public ResponseEntity<ApiResponse<PagedResponseDTO<QuestResponseDTO>>> getCompletedQuests(
+		PagingRequestDTO pagingRequest
+	) {
+		return ResponseEntity.ok(ApiResponse.of(questService.getCompletedQuests(pagingRequest)));
 	}
 }
