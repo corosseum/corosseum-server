@@ -1,19 +1,24 @@
 package com.ysw.corosseum.service.impl;
 
+import com.ysw.corosseum.common.exception.BadRequestException;
 import com.ysw.corosseum.common.exception.NotFoundException;
 import com.ysw.corosseum.domain.vo.ReviewResult;
 import com.ysw.corosseum.domain.entity.Quest;
 import com.ysw.corosseum.domain.entity.Submission;
+import com.ysw.corosseum.dto.common.PagedResponseDTO;
+import com.ysw.corosseum.dto.common.PagingRequestDTO;
 import com.ysw.corosseum.dto.submission.SubmissionResponseDTO;
 import com.ysw.corosseum.repository.impl.QuestRepository;
 import com.ysw.corosseum.repository.impl.SubmissionRepository;
 import com.ysw.corosseum.service.ReviewService;
 import com.ysw.corosseum.service.SubmissionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +35,11 @@ public class SubmissionServiceImpl implements SubmissionService {
 			.orElseThrow(() -> new NotFoundException("퀘스트를 찾을 수 없습니다."));
 
 		Submission submission = Submission.create(quest, userId, code);
-		submission = submissionRepository.save(submission);
+		try {
+			submission = submissionRepository.save(submission);
+		} catch (DataIntegrityViolationException e) {
+			throw new BadRequestException("이미 제출한 퀘스트입니다.");
+		}
 
 		// 리뷰 생성
 		ReviewResult reviewResult = reviewService.reviewCode(code);
@@ -44,15 +53,43 @@ public class SubmissionServiceImpl implements SubmissionService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<SubmissionResponseDTO> getSubmissions(Pageable pageable) {
-		return submissionRepository.findAllActive(pageable)
-			.map(SubmissionResponseDTO::of);
+	public PagedResponseDTO<SubmissionResponseDTO> getSubmissions(PagingRequestDTO pagingRequest) {
+		long total = submissionRepository.countAllActive();
+		if (total == 0) {
+			return PagedResponseDTO.empty(pagingRequest);
+		}
+		List<Submission> submissions = submissionRepository.findAllActive(
+			pagingRequest.getOffset(),
+			pagingRequest.getLimit()
+		);
+		List<SubmissionResponseDTO> dtoList = submissions.stream()
+			.map(SubmissionResponseDTO::of)
+			.collect(Collectors.toList());
+		return PagedResponseDTO.of(pagingRequest, total, dtoList);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public SubmissionResponseDTO getSubmission(String id) {
-		Submission submission = submissionRepository.findById(id)
+	public PagedResponseDTO<SubmissionResponseDTO> getSubmissionsByQuestId(String questId, PagingRequestDTO pagingRequest) {
+		long total = submissionRepository.countByQuestId(questId);
+		if (total == 0) {
+			return PagedResponseDTO.empty(pagingRequest);
+		}
+		List<Submission> submissions = submissionRepository.findByQuestIdOrderByCreatedAtDesc(
+			questId,
+			pagingRequest.getOffset(),
+			pagingRequest.getLimit()
+		);
+		List<SubmissionResponseDTO> dtoList = submissions.stream()
+			.map(SubmissionResponseDTO::of)
+			.collect(Collectors.toList());
+		return PagedResponseDTO.of(pagingRequest, total, dtoList);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public SubmissionResponseDTO getSubmission(String questId, String submissionId) {
+		Submission submission = submissionRepository.findByIdAndQuestId(submissionId, questId)
 			.orElseThrow(() -> new NotFoundException("제출을 찾을 수 없습니다."));
 		return SubmissionResponseDTO.of(submission);
 	}

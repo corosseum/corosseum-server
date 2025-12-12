@@ -10,9 +10,6 @@ import lombok.*;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 public class SubmissionRequestDTO {
-	@NotBlank
-	@Schema(description = "퀘스트 ID")
-	private String questId;
 
 	@NotBlank
 	@Schema(description = "사용자 ID (UUID)")
@@ -23,12 +20,10 @@ public class SubmissionRequestDTO {
 	private String code;
 
 	public static SubmissionRequestDTO of(
-		String questId,
 		String userId,
 		String code
 	) {
 		return SubmissionRequestDTO.builder()
-			.questId(questId)
 			.userId(userId)
 			.code(code)
 			.build();

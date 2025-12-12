@@ -1,11 +1,12 @@
 package com.ysw.corosseum.service;
 
+import com.ysw.corosseum.dto.common.PagedResponseDTO;
+import com.ysw.corosseum.dto.common.PagingRequestDTO;
 import com.ysw.corosseum.dto.submission.SubmissionResponseDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface SubmissionService {
 	void submitCode(String questId, String userId, String code);
-	Page<SubmissionResponseDTO> getSubmissions(Pageable pageable);
-	SubmissionResponseDTO getSubmission(String id);
+	PagedResponseDTO<SubmissionResponseDTO> getSubmissions(PagingRequestDTO pagingRequest);
+	PagedResponseDTO<SubmissionResponseDTO> getSubmissionsByQuestId(String questId, PagingRequestDTO pagingRequest);
+	SubmissionResponseDTO getSubmission(String questId, String submissionId);
 }
