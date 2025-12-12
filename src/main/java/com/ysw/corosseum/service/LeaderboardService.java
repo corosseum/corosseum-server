@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface LeaderboardService {
 	List<LeaderboardResponseDTO> getDailyLeaderboard();
-	List<LeaderboardResponseDTO> getYesterdayTop3();
+	List<LeaderboardResponseDTO> getYesterdayTopLeaderboard();
 	List<LeaderboardResponseDTO> getHallOfFame();
 }

@@ -8,7 +8,6 @@ import com.ysw.corosseum.repository.impl.VoteRepository;
 import com.ysw.corosseum.service.LeaderboardService;
 import com.ysw.corosseum.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,18 +33,16 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<LeaderboardResponseDTO> getYesterdayTop3() {
+	public List<LeaderboardResponseDTO> getYesterdayTopLeaderboard() {
 		LocalDate yesterday = DateUtil.today().minusDays(1);
 		List<Submission> submissions = submissionRepository.findByQuestDate(yesterday);
-		return buildLeaderboard(submissions, 3);
+		return buildLeaderboard(submissions, 10);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<LeaderboardResponseDTO> getHallOfFame() {
-		List<Submission> allSubmissions = submissionRepository.findAllActive(
-			PageRequest.of(0, 1000)
-		).getContent();
+		List<Submission> allSubmissions = submissionRepository.findAllActive(0, 1000);
 		return buildLeaderboard(allSubmissions, 10);
 	}
 

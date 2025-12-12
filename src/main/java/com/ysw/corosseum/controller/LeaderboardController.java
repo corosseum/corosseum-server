@@ -31,12 +31,12 @@ public class LeaderboardController {
 	}
 
 	@Operation(
-		summary = "어제의 TOP 3 조회",
-		description = "어제 날짜의 제출 코드 중 투표 수가 가장 많은 상위 3개를 조회합니다."
+		summary = "어제의 TOP 10 조회",
+		description = "어제 날짜의 제출 코드 중 투표 수가 가장 많은 상위 10개를 조회합니다."
 	)
-	@GetMapping("/yesterday-top3")
-	public ResponseEntity<ApiResponse<List<LeaderboardResponseDTO>>> getYesterdayTop3() {
-		return ResponseEntity.ok(ApiResponse.of(leaderboardService.getYesterdayTop3()));
+	@GetMapping("/yesterday-top")
+	public ResponseEntity<ApiResponse<List<LeaderboardResponseDTO>>> getYesterdayTopLeaderboard() {
+		return ResponseEntity.ok(ApiResponse.of(leaderboardService.getYesterdayTopLeaderboard()));
 	}
 
 	@Operation(
