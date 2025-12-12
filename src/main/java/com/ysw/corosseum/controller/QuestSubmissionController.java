@@ -1,6 +1,8 @@
 package com.ysw.corosseum.controller;
 
 import com.ysw.corosseum.common.ApiResponse;
+import com.ysw.corosseum.dto.common.PagedResponseDTO;
+import com.ysw.corosseum.dto.common.PagingRequestDTO;
 import com.ysw.corosseum.dto.submission.SubmissionRequestDTO;
 import com.ysw.corosseum.dto.submission.SubmissionResponseDTO;
 import com.ysw.corosseum.service.SubmissionService;
@@ -8,8 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,10 +42,22 @@ public class SubmissionController {
 		description = "페이징된 제출본 목록을 조회합니다."
 	)
 	@GetMapping
-	public ResponseEntity<ApiResponse<Page<SubmissionResponseDTO>>> getSubmissions(
-		Pageable pageable
+	public ResponseEntity<ApiResponse<PagedResponseDTO<SubmissionResponseDTO>>> getSubmissions(
+		PagingRequestDTO pagingRequest
 	) {
-		return ResponseEntity.ok(ApiResponse.of(submissionService.getSubmissions(pageable)));
+		return ResponseEntity.ok(ApiResponse.of(submissionService.getSubmissions(pagingRequest)));
+	}
+
+	@Operation(
+		summary = "특정 퀘스트의 제출본 목록 조회",
+		description = "특정 퀘스트에 제출된 코드를 등록 최신순으로 페이징하여 조회합니다."
+	)
+	@GetMapping("/quests/{questId}")
+	public ResponseEntity<ApiResponse<PagedResponseDTO<SubmissionResponseDTO>>> getSubmissionsByQuestId(
+		@PathVariable String questId,
+		PagingRequestDTO pagingRequest
+	) {
+		return ResponseEntity.ok(ApiResponse.of(submissionService.getSubmissionsByQuestId(questId, pagingRequest)));
 	}
 
 	@Operation(
