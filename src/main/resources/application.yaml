@@ -4,6 +4,7 @@ server:
     encoding:
       charset: UTF-8
       force: true
+  port: 8090
 
 spring:
   application:
