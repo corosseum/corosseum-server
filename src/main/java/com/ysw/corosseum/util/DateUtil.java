@@ -1,6 +1,8 @@
 package com.ysw.corosseum.util;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DateUtil {
 
@@ -18,16 +20,16 @@ public class DateUtil {
     }
 
     public static LocalDate nextWeekStartDate() {
-        return today().plusWeeks(1).with(java.time.DayOfWeek.MONDAY);
+        return today().plusWeeks(1).with(DayOfWeek.MONDAY);
     }
 
     public static LocalDate nextWeekEndDate() {
-        return nextWeekStartDate().with(java.time.DayOfWeek.SUNDAY);
+        return nextWeekStartDate().with(DayOfWeek.SUNDAY);
     }
 
     public static java.util.List<LocalDate> getNextWeekDates() {
         LocalDate start = nextWeekStartDate();
-        java.util.List<LocalDate> dates = new java.util.ArrayList<>();
+        List<LocalDate> dates = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             dates.add(start.plusDays(i));
         }
