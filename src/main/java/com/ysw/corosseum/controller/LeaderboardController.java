@@ -41,7 +41,7 @@ public class LeaderboardController {
 
 	@Operation(
 		summary = "명예의 전당 조회",
-		description = "각 투표 타입별로 가장 많은 표를 받은 코드들을 조회합니다."
+		description = "전체 제출물 중 총 투표 수(totalVotes)가 가장 많은 상위 10개를 내림차순으로 조회합니다. 퀘스트나 투표 타입 구분 없이 전체 통합 기준입니다."
 	)
 	@GetMapping("/hall-of-fame")
 	public ResponseEntity<ApiResponse<List<LeaderboardResponseDTO>>> getHallOfFame() {

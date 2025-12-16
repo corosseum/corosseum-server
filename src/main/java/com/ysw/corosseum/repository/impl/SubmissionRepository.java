@@ -20,7 +20,12 @@ public class SubmissionRepository {
 	private final EntityManager entityManager;
 
 	public Optional<Submission> findById(String id) {
-		return submissionJpaRepository.findById(id);
+		TypedQuery<Submission> query = entityManager.createQuery(
+			"SELECT s FROM Submission s JOIN FETCH s.quest WHERE s.id = :id",
+			Submission.class
+		);
+		query.setParameter("id", id);
+		return query.getResultStream().findFirst();
 	}
 
 	public Optional<Submission> findByIdAndQuestId(String id, String questId) {
@@ -37,7 +42,7 @@ public class SubmissionRepository {
 
 	public List<Submission> findAllActive(int offset, int limit) {
 		TypedQuery<Submission> query = entityManager.createQuery(
-			"SELECT s FROM Submission s ORDER BY s.createdAt DESC",
+			"SELECT s FROM Submission s JOIN FETCH s.quest ORDER BY s.createdAt DESC",
 			Submission.class
 		);
 		query.setFirstResult(offset);
@@ -51,7 +56,7 @@ public class SubmissionRepository {
 
 	public List<Submission> findByQuestIdOrderByCreatedAtDesc(String questId, int offset, int limit) {
 		TypedQuery<Submission> query = entityManager.createQuery(
-			"SELECT s FROM Submission s WHERE s.quest.id = :questId ORDER BY s.createdAt DESC",
+			"SELECT s FROM Submission s JOIN FETCH s.quest WHERE s.quest.id = :questId ORDER BY s.createdAt DESC",
 			Submission.class
 		);
 		query.setParameter("questId", questId);
@@ -62,5 +67,20 @@ public class SubmissionRepository {
 
 	public long countByQuestId(String questId) {
 		return submissionJpaRepository.countByQuestId(questId);
+	}
+
+	public List<Submission> findTop10ByTotalVotes() {
+		TypedQuery<Submission> query = entityManager.createQuery(
+			"""
+			SELECT s FROM Submission s
+			JOIN FETCH s.quest
+			LEFT JOIN Vote v ON v.submission = s
+			GROUP BY s, s.quest.id
+			ORDER BY COUNT(v) DESC
+			""",
+			Submission.class
+		);
+		query.setMaxResults(10);
+		return query.getResultList();
 	}
 }

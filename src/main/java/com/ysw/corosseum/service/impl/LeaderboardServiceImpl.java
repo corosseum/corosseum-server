@@ -42,8 +42,8 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<LeaderboardResponseDTO> getHallOfFame() {
-		List<Submission> allSubmissions = submissionRepository.findAllActive(0, 1000);
-		return buildLeaderboard(allSubmissions, 10);
+		List<Submission> topSubmissions = submissionRepository.findTop10ByTotalVotes();
+		return buildLeaderboard(topSubmissions, 10);
 	}
 
 	private List<LeaderboardResponseDTO> buildLeaderboard(List<Submission> submissions) {
