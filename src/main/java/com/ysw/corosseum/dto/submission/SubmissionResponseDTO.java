@@ -18,6 +18,9 @@ public class SubmissionResponseDTO {
 	@Schema(description = "퀘스트 ID")
 	private String questId;
 	
+	@Schema(description = "퀘스트 설명")
+	private String questDescription;
+	
 	@Schema(description = "사용자 ID")
 	private String userId;
 	
@@ -64,6 +67,7 @@ public class SubmissionResponseDTO {
 		return SubmissionResponseDTO.builder()
 			.id(submission.getId())
 			.questId(submission.getQuest().getId())
+			.questDescription(submission.getQuest().getDescription())
 			.userId(submission.getUserId())
 			.code(submission.getCode())
 			.readabilityScore(submission.getReadabilityScore())

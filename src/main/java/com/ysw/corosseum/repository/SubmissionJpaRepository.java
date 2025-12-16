@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface SubmissionJpaRepository extends JpaRepository<Submission, String> {
 
-	@Query("SELECT s FROM Submission s WHERE s.quest.questDate = :date ORDER BY s.createdAt DESC")
+	@Query("SELECT s FROM Submission s JOIN FETCH s.quest WHERE s.quest.questDate = :date ORDER BY s.createdAt DESC")
 	List<Submission> findByQuestDate(LocalDate date);
 
 	@Query("SELECT COUNT(s) FROM Submission s")
@@ -21,6 +21,6 @@ public interface SubmissionJpaRepository extends JpaRepository<Submission, Strin
 	@Query("SELECT COUNT(s) FROM Submission s WHERE s.quest.id = :questId")
 	long countByQuestId(String questId);
 
-	@Query("SELECT s FROM Submission s WHERE s.id = :id AND s.quest.id = :questId")
+	@Query("SELECT s FROM Submission s JOIN FETCH s.quest WHERE s.id = :id AND s.quest.id = :questId")
 	Optional<Submission> findByIdAndQuestId(String id, String questId);
 }
