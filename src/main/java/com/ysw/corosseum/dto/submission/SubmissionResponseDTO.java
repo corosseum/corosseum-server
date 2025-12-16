@@ -42,7 +42,25 @@ public class SubmissionResponseDTO {
 	@Schema(description = "생성 일시", example = "2024-01-01 00:00:00")
 	private String createdAt;
 
-	public static SubmissionResponseDTO of(Submission submission) {
+	@Schema(description = "총 투표 수")
+	private Long totalVotes;
+
+	@Schema(description = "🤮 토나와 투표 수")
+	private Long disgustingVotes;
+
+	@Schema(description = "🤩 천재다 투표 수")
+	private Long geniusVotes;
+
+	@Schema(description = "🤣 빵터짐 투표 수")
+	private Long lolVotes;
+
+	public static SubmissionResponseDTO of(
+		Submission submission,
+		Long totalVotes,
+		Long disgustingVotes,
+		Long geniusVotes,
+		Long lolVotes
+	) {
 		return SubmissionResponseDTO.builder()
 			.id(submission.getId())
 			.questId(submission.getQuest().getId())
@@ -54,6 +72,10 @@ public class SubmissionResponseDTO {
 			.reviewComment(submission.getReviewComment())
 			.status(submission.getStatus())
 			.createdAt(DateFormatUtil.format(submission.getCreatedAt()))
+			.totalVotes(totalVotes)
+			.disgustingVotes(disgustingVotes)
+			.geniusVotes(geniusVotes)
+			.lolVotes(lolVotes)
 			.build();
 	}
 }

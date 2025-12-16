@@ -34,7 +34,7 @@ public class LeaderboardResponseDTO {
         Long lolVotes
     ) {
         return LeaderboardResponseDTO.builder()
-            .submission(SubmissionResponseDTO.of(submission))
+            .submission(SubmissionResponseDTO.of(submission, totalVotes, disgustingVotes, geniusVotes, lolVotes))
             .totalVotes(totalVotes)
             .disgustingVotes(disgustingVotes)
             .geniusVotes(geniusVotes)
