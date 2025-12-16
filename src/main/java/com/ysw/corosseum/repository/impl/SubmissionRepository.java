@@ -76,6 +76,7 @@ public class SubmissionRepository {
 			JOIN FETCH s.quest
 			LEFT JOIN Vote v ON v.submission = s
 			GROUP BY s, s.quest.id
+			HAVING COUNT(v) > 0
 			ORDER BY COUNT(v) DESC
 			""",
 			Submission.class
