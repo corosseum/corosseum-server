@@ -31,6 +31,6 @@ public interface QuestJpaRepository extends JpaRepository<Quest, String> {
 	@Query("SELECT COUNT(q) FROM Quest q WHERE q.status != 'DELETED'")
 	long countAll();
 
-	@Query("SELECT COUNT(q) FROM Quest q WHERE q.status = 'COMPLETED'")
+	@Query("SELECT COUNT(q) FROM Quest q WHERE q.status IN ('ACTIVATED', 'COMPLETED')")
 	long countCompleted();
 }

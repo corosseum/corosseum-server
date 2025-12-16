@@ -59,7 +59,7 @@ public class QuestRepository {
 
 	public List<Quest> findAllCompletedOrderByQuestDateDesc(int offset, int limit) {
 		TypedQuery<Quest> query = entityManager.createQuery(
-			"SELECT q FROM Quest q WHERE q.status = 'COMPLETED' ORDER BY q.questDate DESC",
+			"SELECT q FROM Quest q WHERE q.status IN ('ACTIVATED', 'COMPLETED') ORDER BY q.questDate DESC",
 			Quest.class
 		);
 		query.setFirstResult(offset);
