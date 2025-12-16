@@ -27,19 +27,26 @@ public class ReviewClient {
 	""";
 
 	private static final String USER_PROMPT_TEMPLATE = """
-	다음 코드를 리뷰하라. 4가지 항목으로 평가한다:
-	1. readability_score: 코드가 얼마나 읽기 쉬운가? (0-100 정수)
-	2. creativity_score: 발상이 얼마나 기괴하고 창의적인가? (0-100 정수)
-	3. inefficiency_score: 얼마나 비효율적이고 읽는 사람을 화나게 하는가? (0-100 정수)
-	4. roast_comment: 강하게 비꼬되 유머러스한 코멘트. 건설적인 조언은 절대 하지 말고, 오직 비꼬고 조롱하는 것만 작성한다. 
-	   돌려말하되 강하게 비꼬는 톤을 유지하고, 재미있는 비유나 농담을 자연스럽게 섞는다. 솔루션이나 개선 방안은 절대 제시하지 않는다.
-
-	코드:
+	다음 퀘스트 설명을 기반으로 제출된 코드를 리뷰하라. 퀘스트의 요구사항과 제약사항을 고려하여 평가한다.
+	
+	퀘스트 설명:
 	%s
+	
+	제출된 코드:
+	%s
+	
+	4가지 항목으로 평가한다:
+	1. readability_score: 코드가 얼마나 읽기 쉬운가? (0-100 정수)
+	2. creativity_score: 퀘스트의 제약사항을 고려했을 때, 발상이 얼마나 기괴하고 창의적인가? (0-100 정수)
+	3. inefficiency_score: 얼마나 비효율적이고 읽는 사람을 화나게 하는가? 얼마나 광기가 섞였나? (0-100 정수)
+	4. roast_comment: 퀘스트 설명과 코드를 대조하여 강하게 비꼬되 유머러스한 코멘트를 작성한다. 
+	   퀘스트의 요구사항이나 제약사항을 얼마나 잘 따랐는지(또는 얼마나 무시했는지)를 비꼬는 맥락으로 활용한다.
+	   건설적인 조언은 절대 하지 말고, 오직 비꼬고 조롱하는 것만 작성한다. 
+	   돌려말하되 강하게 비꼬는 톤을 유지하고, 재미있는 비유나 농담을 자연스럽게 섞는다. 솔루션이나 개선 방안은 절대 제시하지 않는다.
 	""";
 
-	public ReviewResponseDTO reviewCode(String code) {
-		String userPrompt = USER_PROMPT_TEMPLATE.formatted(code);
+	public ReviewResponseDTO reviewCode(String questDescription, String code) {
+		String userPrompt = USER_PROMPT_TEMPLATE.formatted(questDescription, code);
 
 		Map<String, Object> schema = Map.of(
 			"type", "object",

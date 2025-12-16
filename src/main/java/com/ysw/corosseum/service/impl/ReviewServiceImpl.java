@@ -14,8 +14,8 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewClient reviewClient;
 
 	@Override
-	public ReviewResult reviewCode(String code) {
-		ReviewResponseDTO response = reviewClient.reviewCode(code);
+	public ReviewResult reviewCode(String questDescription, String code) {
+		ReviewResponseDTO response = reviewClient.reviewCode(questDescription, code);
 		
 		return new ReviewResult(
 			response.getReadabilityScore(),
