@@ -7,7 +7,7 @@ import java.util.List;
 public class DateUtil {
 
     public static Instant now() {
-        return LocalDateTime.now(ZoneId.of("Asia/Seoul")).toInstant(ZoneOffset.UTC);
+        return Instant.now();
     }
 
     public static LocalDate today() {
