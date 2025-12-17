@@ -22,7 +22,7 @@ public class QuestSubmissionController {
 
 	@Operation(
 		summary = "코드 제출",
-		description = "퀘스트에 대한 코드를 제출합니다. 하루에 한 번만 제출 가능합니다."
+		description = "퀘스트에 대한 코드를 제출합니다."
 	)
 	@PostMapping
 	public ResponseEntity<ApiResponse<Void>> submitCode(

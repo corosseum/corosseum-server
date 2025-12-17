@@ -9,12 +9,7 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-@Table(
-	name = "submissions",
-	uniqueConstraints = {
-		@UniqueConstraint(name = "uk_submission_quest_user", columnNames = {"quest_id", "user_id"})
-	}
-)
+@Table(name = "submissions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -1,6 +1,5 @@
 package com.ysw.corosseum.service.impl;
 
-import com.ysw.corosseum.common.exception.BadRequestException;
 import com.ysw.corosseum.common.exception.NotFoundException;
 import com.ysw.corosseum.domain.type.VoteType;
 import com.ysw.corosseum.domain.vo.ReviewResult;
@@ -15,7 +14,6 @@ import com.ysw.corosseum.repository.impl.VoteRepository;
 import com.ysw.corosseum.service.ReviewService;
 import com.ysw.corosseum.service.SubmissionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +37,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 			.orElseThrow(() -> new NotFoundException("퀘스트를 찾을 수 없습니다."));
 
 		Submission submission = Submission.create(quest, userId, code);
-		try {
-			submission = submissionRepository.save(submission);
-		} catch (DataIntegrityViolationException e) {
-			throw new BadRequestException("이미 제출한 퀘스트입니다.");
-		}
+		submission = submissionRepository.save(submission);
 
 		// 리뷰 생성
 		ReviewResult reviewResult = reviewService.reviewCode(quest.getDescription(), code);
